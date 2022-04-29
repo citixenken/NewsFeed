@@ -9,8 +9,27 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @StateObject var viewModel = NewsViewModelImplementation(service: NewsServiceImplementation())
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Group {
+            switch viewModel.state {
+            case .loading:
+                ProgressView()
+            case .success(let articles):
+                NavigationView {
+                    List(articles) { item in
+                        ArticleView(article: item)
+                    }
+                    .navigationTitle("NewsFeed")
+                    .navigationBarTitleDisplayMode(.inline)
+                }
+            case .failed(let error):
+                //handler allows for reload via button
+                ErrorView(error: error, handler: viewModel.getArticles)
+            }
+        }
+        .onAppear(perform: viewModel.getArticles)
     }
 }
 
