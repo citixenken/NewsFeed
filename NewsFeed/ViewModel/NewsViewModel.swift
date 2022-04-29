@@ -12,7 +12,7 @@ protocol NewsViewModel {
     func getArticles()
 }
 
-class NewViewModelImplementation: ObservableObject, NewsViewModel {
+class NewsViewModelImplementation: ObservableObject, NewsViewModel {
     private let service: NewsService
     private(set) var articles = [Article]()
     private var cancellables = Set<AnyCancellable>()
