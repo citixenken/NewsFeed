@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Environment(\.openURL) var openUrl
     
     @StateObject var viewModel = NewsViewModelImplementation(service: NewsServiceImplementation())
     
@@ -20,6 +21,9 @@ struct HomeView: View {
                 NavigationView {
                     List(articles) { item in
                         ArticleView(article: item)
+                            .onTapGesture {
+                                load(url: item.url)
+                            }
                     }
                     .navigationTitle("NewsFeed")
                     .navigationBarTitleDisplayMode(.inline)
@@ -30,6 +34,12 @@ struct HomeView: View {
             }
         }
         .onAppear(perform: viewModel.getArticles)
+    }
+    
+    func load(url: String?) {
+        guard let link = url, let url = URL(string: link) else { return }
+        
+        openUrl(url)
     }
 }
 
